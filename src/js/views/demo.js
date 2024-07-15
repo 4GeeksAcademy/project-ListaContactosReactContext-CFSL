@@ -1,43 +1,41 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+
 
 import { Context } from "../store/appContext";
 
-import "../../styles/demo.css";
-
 export const Demo = () => {
 	const { store, actions } = useContext(Context);
+	const [username, setUsername]=useState('');
+	//se ejecutara en el momento de acceder a la pagaina, con array vacio
+	useEffect(()=>{
+		actions.getUsers()
+	},[])
+
+	const handleSubmit = e => {
+		e.preventDefault();
+		actions.addUser(username);
+	}
+
+	const handleDelete = (user) => {
+		actions.delUser(user);
+	}
 
 	return (
 		<div className="container">
-			<ul className="list-group">
-				{store.demo.map((item, index) => {
-					return (
-						<li
-							key={index}
-							className="list-group-item d-flex justify-content-between"
-							style={{ background: item.background }}>
-							<Link to={"/single/" + index}>
-								<span>Link to: {item.title}</span>
-							</Link>
-							{// Conditional render example
-							// Check to see if the background is orange, if so, display the message
-							item.background === "orange" ? (
-								<p style={{ color: item.initial }}>
-									Check store/flux.js scroll to the actions to see the code
-								</p>
-							) : null}
-							<button className="btn btn-success" onClick={() => actions.changeColor(index, "orange")}>
-								Change Color
-							</button>
-						</li>
-					);
-				})}
+			<h2>METODOS</h2>
+			<ul>
+				{store.users?.map(el=> <li key={el.id}>{el.name} <span onClick={()=> handleDelete(el.name)}>xxxxx</span> </li>)}
+				
 			</ul>
-			<br />
-			<Link to="/">
-				<button className="btn btn-primary">Back home</button>
-			</Link>
+
+			<form onSubmit={handleSubmit}>
+				<h2>Create user</h2>
+				<input type="text" value={username} placeholder="username" onChange={e=> setUsername(e.target.value)}></input>
+				<input type="submit" value={'crear'}></input>
+				
+			</form>
+
+			
 		</div>
 	);
 };
